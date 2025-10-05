@@ -45,6 +45,8 @@
 
   <!-- Script -->
   <script>
+    const API_BASE_URL = "https://investsmart-backend.onrender.com"; // ✅ Live Render backend
+
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -52,7 +54,7 @@
       const password = document.getElementById("loginPassword").value.trim();
 
       try {
-        const res = await fetch("http://localhost:5000/auth/login", {
+        const res = await fetch(`${API_BASE_URL}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password })
@@ -68,7 +70,7 @@
           alert("✅ Login successful!");
           window.location.href = "dashboard.html"; // Redirect after login
         } else {
-          alert("❌ " + data.error);
+          alert("❌ " + (data.error || "Login failed"));
         }
       } catch (error) {
         console.error(error);
