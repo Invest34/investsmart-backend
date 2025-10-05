@@ -10,3 +10,4 @@ contact.html
 login.html
 plans.html
 signup.html" > .gitignore
+.env
