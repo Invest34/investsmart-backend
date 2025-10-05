@@ -1,0 +1,12 @@
+echo "node_modules/
+*.html
+package-lock.json
+dashboard.html
+learn.html
+index.html
+Investment-homepage.html
+about.html
+contact.html
+login.html
+plans.html
+signup.html" > .gitignore
