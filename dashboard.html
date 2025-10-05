@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard | InvestSmart</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<nav class="flex justify-between items-center p-6 bg-green-700 text-white">
+  <h1 class="text-2xl font-bold">InvestSmart</h1>
+  <div class="space-x-4">
+    <a href="investment-homepage.html" class="hover:underline">Home</a>
+    <a href="plans.html" class="hover:underline">Plans</a>
+    <a href="learn.html" class="hover:underline">Learn</a>
+    <a href="about.html" class="hover:underline">About</a>
+    <a href="contact.html" class="hover:underline">Contact</a>
+    <button id="logoutBtn" class="bg-yellow-400 text-green-900 px-4 py-2 rounded-lg font-medium hover:bg-yellow-500">
+      Logout
+    </button>
+  </div>
+</nav>
+
+<main class="flex-1 p-8">
+  <h2 id="welcomeMsg" class="text-3xl font-bold text-green-700 mb-6">Welcome Back!</h2>
+
+  <section class="grid md:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white shadow rounded-xl p-6">
+      <h3 class="text-gray-500 mb-2">Account Balance</h3>
+      <p id="accountBalance" class="text-2xl font-bold text-green-700">$0</p>
+    </div>
+    <div class="bg-white shadow rounded-xl p-6">
+      <h3 class="text-gray-500 mb-2">Total Investments</h3>
+      <p id="totalInvestments" class="text-2xl font-bold text-green-700">$0</p>
+    </div>
+    <div class="bg-white shadow rounded-xl p-6">
+      <h3 class="text-gray-500 mb-2">Earnings</h3>
+      <p id="earnings" class="text-2xl font-bold text-green-700">$0</p>
+    </div>
+  </section>
+
+  <section class="bg-white shadow rounded-xl p-6 mb-10">
+    <h3 class="text-xl font-semibold mb-4">Your Portfolio</h3>
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-gray-100 text-gray-600">
+          <th class="p-3">Investment</th>
+          <th class="p-3">Amount</th>
+          <th class="p-3">Status</th>
+          <th class="p-3">Returns</th>
+        </tr>
+      </thead>
+      <tbody id="portfolioTable"></tbody>
+    </table>
+  </section>
+
+  <section class="flex gap-4">
+    <button id="depositBtn" class="flex-1 bg-green-700 text-white py-3 rounded-lg shadow hover:bg-green-800">Deposit</button>
+    <button id="withdrawBtn" class="flex-1 bg-yellow-400 text-green-900 py-3 rounded-lg shadow hover:bg-yellow-500">Withdraw</button>
+  </section>
+</main>
+
+<footer class="bg-gray-100 text-center p-4 text-gray-500">
+  © 2025 InvestSmart. All rights reserved.
+</footer>
+
+<script>
+const token = localStorage.getItem("token");
+const user_id = localStorage.getItem("user_id");
+
+if (!token || !user_id) {
+  alert("Please login first");
+  window.location.href = "login.html";
+}
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user_id");
+  window.location.href = "login.html";
+});
+
+document.getElementById("welcomeMsg").textContent = `Welcome, User #${user_id}`;
+
+// Deposit
+document.getElementById("depositBtn").addEventListener("click", async () => {
+  let amount = prompt("Enter deposit amount in USD:");
+  if (!amount) return;
+
+  amount = parseFloat(amount);
+  if (isNaN(amount) || amount <= 0) return alert("Enter valid amount");
+
+  try {
+    const res = await fetch("http://localhost:5000/transactions/deposit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ user_id, amount })
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert(`${data.message}\nSend the funds to this Binance wallet:\n${data.wallet}`);
+    }
+    loadInvestments();
+  } catch (err) {
+    console.error(err);
+    alert("Error connecting to server");
+  }
+});
+
+// Withdraw
+document.getElementById("withdrawBtn").addEventListener("click", async () => {
+  let amount = prompt("Enter withdrawal amount in USD:");
+  if (!amount) return;
+
+  amount = parseFloat(amount);
+  if (isNaN(amount) || amount <= 0) return alert("Enter valid amount");
+
+  try {
+    const res = await fetch("http://localhost:5000/transactions/withdrawal", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ user_id, amount })
+    });
+    const data = await res.json();
+    if (res.ok) alert(data.message);
+    loadInvestments();
+  } catch (err) {
+    console.error(err);
+    alert("Error connecting to server");
+  }
+});
+
+// Load investments and transactions
+async function loadInvestments() {
+  try {
+    const res = await fetch(`http://localhost:5000/transactions/${user_id}`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error("Failed to fetch transactions");
+
+    const records = await res.json();
+    let balance = 0, totalInvestments = 0;
+    const table = document.getElementById("portfolioTable");
+    table.innerHTML = "";
+
+    records.forEach(r => {
+      const isWithdrawal = r.type === "withdrawal";
+      const isPending = r.status === "pending";
+
+      const row = document.createElement("tr");
+      row.classList.add("border-b");
+      row.innerHTML = `
+        <td class="p-3">${isWithdrawal ? "Withdrawal" : "Deposit"}</td>
+        <td class="p-3 ${isWithdrawal ? 'text-red-600' : 'text-green-600'}">
+          ${isWithdrawal ? '-' : ''}$${Math.abs(r.amount)}
+        </td>
+        <td class="p-3 ${isPending ? 'text-yellow-600' : isWithdrawal ? 'text-red-600' : 'text-green-600'}">
+          ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}
+        </td>
+        <td class="p-3">${isWithdrawal || isPending ? '-' : Math.round(Math.random()*15)}%</td>
+      `;
+      table.appendChild(row);
+
+      // Only successful deposits/withdrawals count toward balance
+      if (!isPending) {
+        balance += isWithdrawal ? -r.amount : r.amount;
+        if (!isWithdrawal) totalInvestments += r.amount;
+      }
+    });
+
+    document.getElementById("accountBalance").textContent = `$${balance.toFixed(2)}`;
+    document.getElementById("totalInvestments").textContent = `$${totalInvestments.toFixed(2)}`;
+    document.getElementById("earnings").textContent = `$${Math.round(totalInvestments * 0.2)}`;
+  } catch (err) {
+    console.error(err);
+    alert("Error loading investments");
+  }
+}
+
+loadInvestments();
+</script>
+
+</body>
+</html>

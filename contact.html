@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | InvestSmart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center p-6 bg-green-700 text-white">
+    <h1 class="text-2xl font-bold">InvestSmart</h1>
+    <div class="space-x-4">
+      <a href="investment-homepage.html" class="hover:underline">Home</a>
+      <a href="plans.html" class="hover:underline">Plans</a>
+      <a href="learn.html" class="hover:underline">Learn</a>
+      <a href="about.html" class="hover:underline">About</a>
+      <a href="contact.html" class="hover:underline font-bold">Contact</a>
+      <button id="logoutBtn" class="bg-yellow-400 text-green-900 px-4 py-2 rounded-lg font-medium hover:bg-yellow-500">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Contact Content -->
+  <main class="flex-1 max-w-4xl mx-auto p-8">
+    <h2 class="text-3xl font-bold text-green-700 mb-6">Contact Us</h2>
+    <p class="text-gray-600 mb-8">We’d love to hear from you. Send us your questions, feedback, or support requests.</p>
+
+    <form id="contactForm" class="bg-white p-6 rounded-xl shadow space-y-4">
+      <div>
+        <label class="block text-sm mb-1">Full Name</label>
+        <input type="text" id="contactName" class="w-full p-3 border rounded-md" placeholder="Your Name" required />
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Email</label>
+        <input type="email" id="contactEmail" class="w-full p-3 border rounded-md" placeholder="you@example.com" required />
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Message</label>
+        <textarea id="contactMessage" class="w-full p-3 border rounded-md" rows="5" placeholder="Type your message..." required></textarea>
+      </div>
+      <button type="submit" class="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800">Send Message</button>
+      <p id="formFeedback" class="text-sm mt-2"></p>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center p-4 text-gray-500">
+    © 2025 InvestSmart. All rights reserved.
+  </footer>
+
+  <script>
+    // Check user authentication
+    const token = localStorage.getItem("token");
+    const user_id = localStorage.getItem("user_id");
+    if (!token || !user_id) {
+      alert("Please login first.");
+      window.location.href = "login.html";
+    }
+
+    // Logout functionality
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_id");
+      window.location.href = "login.html";
+    });
+
+    // Handle contact form submission
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("contactName").value.trim();
+      const email = document.getElementById("contactEmail").value.trim();
+      const message = document.getElementById("contactMessage").value.trim();
+      const feedback = document.getElementById("formFeedback");
+
+      if (!name || !email.includes("@") || !message) {
+        feedback.textContent = "Please fill in all fields correctly.";
+        feedback.className = "text-red-500 text-sm mt-2";
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ user_id, name, email, message })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          feedback.textContent = "Message sent successfully ✅";
+          feedback.className = "text-green-600 text-sm mt-2";
+          document.getElementById("contactForm").reset();
+        } else {
+          feedback.textContent = data.error || "Failed to send message.";
+          feedback.className = "text-red-500 text-sm mt-2";
+        }
+      } catch (err) {
+        feedback.textContent = "Server error. Please try again later.";
+        feedback.className = "text-red-500 text-sm mt-2";
+      }
+    });
+  </script>
+
+</body>
+</html>

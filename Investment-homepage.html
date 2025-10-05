@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvestSmart - Homepage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-white to-slate-50 text-slate-800">
+
+  <!-- Header -->
+  <header class="max-w-6xl mx-auto p-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold">IS</div>
+      <div>
+        <h1 class="font-semibold text-lg">InvestSmart</h1>
+        <p class="text-xs text-slate-500">Invest smarter. Grow faster.</p>
+      </div>
+    </div>
+    <nav class="flex items-center gap-4">
+      <a href="#plans" class="px-4 py-2 border rounded-md">Plans</a>
+      <a href="#learn" class="px-4 py-2 border rounded-md">Learn</a>
+      <a href="login.html" class="px-4 py-2 border rounded-md">Login</a>
+      <a href="signup.html" class="px-4 py-2 bg-emerald-600 text-white rounded-md shadow">Sign Up</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="max-w-6xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-8 items-center">
+    <div>
+      <h2 class="text-4xl font-extrabold leading-tight">Invest with clarity. Watch your money grow.</h2>
+      <p class="mt-4 text-slate-600">Custom plans, clear metrics, and a learning hub to make confident choices. Built for Kenya and global investors alike.</p>
+
+      <div class="mt-6 flex gap-3">
+        <a href="signup.html" class="px-5 py-3 bg-emerald-600 text-white rounded-lg font-medium">Get started</a>
+        <a href="#plans" class="px-5 py-3 border rounded-lg">View plans</a>
+      </div>
+
+      <div class="mt-8 grid grid-cols-3 gap-4 text-sm text-center">
+        <div>
+          <div class="font-bold text-xl">3x</div>
+          <div class="text-slate-500">Avg. growth (demo)</div>
+        </div>
+        <div>
+          <div class="font-bold text-xl">100+</div>
+          <div class="text-slate-500">Active users (demo)</div>
+        </div>
+        <div>
+          <div class="font-bold text-xl">24/7</div>
+          <div class="text-slate-500">Support</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROI Simulator (UI only) -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg">
+      <h3 class="font-semibold">ROI Simulator</h3>
+      <p class="text-sm text-slate-500">Try different plans and amounts to see projected returns.</p>
+
+      <div class="mt-4">
+        <label class="text-sm">Amount (KES)</label>
+        <input type="number" placeholder="10000" class="w-full mt-2 p-3 border rounded-md" />
+      </div>
+
+      <div class="mt-4">
+        <label class="text-sm">Plan</label>
+        <select class="w-full mt-2 p-3 border rounded-md">
+          <option>Growth Saver — 8% / 6m</option>
+          <option>Balanced Builder — 15% / 12m</option>
+          <option>Aggressive Accelerator — 28% / 24m</option>
+        </select>
+      </div>
+
+      <div class="mt-6 bg-slate-50 p-4 rounded-md">
+        <div class="text-xs text-slate-500">Projected after 12 months:</div>
+        <div class="text-2xl font-bold">KES 11,500</div>
+        <div class="text-sm text-slate-500">Estimated — not financial advice</div>
+      </div>
+
+      <div class="mt-4 flex gap-2">
+        <a href="signup.html" class="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-md text-center">Invest now</a>
+        <a href="#plans" class="flex-1 px-4 py-2 border rounded-md text-center">Save plan</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plans Section -->
+  <section id="plans" class="max-w-6xl mx-auto px-6 py-12">
+    <h3 class="text-2xl font-semibold">Investment Plans</h3>
+    <p class="text-slate-500">Choose a plan that matches your goals.</p>
+
+    <div class="mt-6 grid md:grid-cols-3 gap-6">
+      <article class="bg-white p-6 rounded-xl shadow">
+        <h4 class="font-semibold">Growth Saver</h4>
+        <p class="text-xs text-slate-500 mt-1">6 months • Min KES 1,000</p>
+        <p class="mt-4 text-sm text-slate-600">Low risk plan with 8% return.</p>
+        <a href="signup.html" class="mt-4 inline-block px-4 py-2 bg-emerald-600 text-white rounded-md">Select</a>
+      </article>
+      <article class="bg-white p-6 rounded-xl shadow">
+        <h4 class="font-semibold">Balanced Builder</h4>
+        <p class="text-xs text-slate-500 mt-1">12 months • Min KES 5,000</p>
+        <p class="mt-4 text-sm text-slate-600">Medium risk plan with 15% return.</p>
+        <a href="signup.html" class="mt-4 inline-block px-4 py-2 bg-emerald-600 text-white rounded-md">Select</a>
+      </article>
+      <article class="bg-white p-6 rounded-xl shadow">
+        <h4 class="font-semibold">Aggressive Accelerator</h4>
+        <p class="text-xs text-slate-500 mt-1">24 months • Min KES 20,000</p>
+        <p class="mt-4 text-sm text-slate-600">High risk plan with 28% return.</p>
+        <a href="signup.html" class="mt-4 inline-block px-4 py-2 bg-emerald-600 text-white rounded-md">Select</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- Learning Hub -->
+  <section id="learn" class="max-w-6xl mx-auto px-6 py-12">
+    <h3 class="text-2xl font-semibold">Learning Hub</h3>
+    <p class="text-slate-500">Short, practical lessons to level up your investing game.</p>
+
+    <div class="mt-4 grid md:grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h5 class="font-semibold">How to start</h5>
+        <p class="text-sm text-slate-500 mt-2">Beginner-friendly steps to create your first portfolio.</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h5 class="font-semibold">Risk management</h5>
+        <p class="text-sm text-slate-500 mt-2">Learn how to diversify and protect capital.</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h5 class="font-semibold">Tax & Regulation</h5>
+        <p class="text-sm text-slate-500 mt-2">Overview of local rules and tax basics.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 text-center text-slate-500 bg-slate-100">
+    © <script>document.write(new Date().getFullYear())</script> InvestSmart — Demo site. All rights reserved.
+  </footer>
+
+</body>
+</html>

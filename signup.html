@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvestSmart - Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-white to-slate-50 flex items-center justify-center h-screen">
+
+  <div class="bg-white shadow-lg rounded-2xl w-full max-w-md p-8">
+    <!-- Logo -->
+    <div class="flex items-center justify-center gap-3 mb-6">
+      <div class="w-12 h-12 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">IS</div>
+      <h1 class="text-2xl font-bold text-slate-800">InvestSmart</h1>
+    </div>
+
+    <h2 class="text-xl font-semibold text-center mb-2">Create Your Account</h2>
+    <p class="text-center text-slate-500 mb-6 text-sm">Join us and start investing smarter 🌱</p>
+
+    <!-- Signup Form -->
+    <form id="signupForm">
+      <div class="mb-4">
+        <label class="text-sm font-medium">Full Name</label>
+        <input id="signupName" type="text" class="w-full mt-1 p-3 border rounded-md" placeholder="John Doe" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="text-sm font-medium">Email</label>
+        <input id="signupEmail" type="email" class="w-full mt-1 p-3 border rounded-md" placeholder="you@example.com" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="text-sm font-medium">Phone</label>
+        <input id="signupPhone" type="text" class="w-full mt-1 p-3 border rounded-md" placeholder="+254700000000" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="text-sm font-medium">Password</label>
+        <input id="signupPassword" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="text-sm font-medium">Confirm Password</label>
+        <input id="signupConfirm" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
+      </div>
+
+      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium">Sign Up</button>
+    </form>
+
+    <p class="text-sm text-center mt-4">
+      Already have an account? 
+      <a href="login.html" class="text-emerald-600 font-medium">Login</a>
+    </p>
+
+    <div class="text-xs text-slate-400 text-center mt-6">
+      © <script>document.write(new Date().getFullYear())</script> InvestSmart
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const form = document.getElementById("signupForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const full_name = document.getElementById("signupName").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
+      const phone = document.getElementById("signupPhone").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirm = document.getElementById("signupConfirm").value;
+
+      // simple validation
+      if (!full_name || !email || !phone || !password) {
+        alert("Please fill out all fields.");
+        return;
+      }
+      if (password !== confirm) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ full_name, email, phone, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert(data.message);
+          window.location.href = "login.html";
+        } else {
+          alert(data.error || "Signup failed");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error connecting to server");
+      }
+    });
+  </script>
+
+</body>
+</html>

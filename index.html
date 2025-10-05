@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | InvestSmart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center p-6 bg-green-700 text-white">
+    <h1 class="text-2xl font-bold">InvestSmart</h1>
+    <div class="space-x-4">
+      <a href="investment-homepage.html" class="hover:underline">Home</a>
+      <a href="plans.html" class="hover:underline">Plans</a>
+      <a href="learn.html" class="hover:underline">Learn</a>
+      <a href="about.html" class="hover:underline">About</a>
+      <a href="contact.html" class="hover:underline">Contact</a>
+      <button id="logoutBtn" class="bg-yellow-400 text-green-900 px-4 py-2 rounded-lg font-medium hover:bg-yellow-500">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- Dashboard Content -->
+  <main class="flex-1 p-8">
+    <h2 id="welcomeMsg" class="text-3xl font-bold text-green-700 mb-6">Welcome Back!</h2>
+
+    <!-- Stats Overview -->
+    <section class="grid md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-gray-500 mb-2">Account Balance</h3>
+        <p id="accountBalance" class="text-2xl font-bold text-green-700">$0</p>
+      </div>
+      <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-gray-500 mb-2">Total Investments</h3>
+        <p id="totalInvestments" class="text-2xl font-bold text-green-700">$0</p>
+      </div>
+      <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-gray-500 mb-2">Earnings</h3>
+        <p id="earnings" class="text-2xl font-bold text-green-700">$0</p>
+      </div>
+    </section>
+
+    <!-- Portfolio -->
+    <section class="bg-white shadow rounded-xl p-6 mb-10">
+      <h3 class="text-xl font-semibold mb-4">Your Portfolio</h3>
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-100 text-gray-600">
+            <th class="p-3">Investment</th>
+            <th class="p-3">Amount</th>
+            <th class="p-3">Status</th>
+            <th class="p-3">Returns</th>
+          </tr>
+        </thead>
+        <tbody id="portfolioTable">
+          <!-- Investments will be dynamically added here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Actions -->
+    <section class="flex gap-4">
+      <button id="depositBtn" class="flex-1 bg-green-700 text-white py-3 rounded-lg shadow hover:bg-green-800">Deposit</button>
+      <button id="withdrawBtn" class="flex-1 bg-yellow-400 text-green-900 py-3 rounded-lg shadow hover:bg-yellow-500">Withdraw</button>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center p-4 text-gray-500">
+    © 2025 InvestSmart. All rights reserved.
+  </footer>
+
+  <!-- Dashboard Script -->
+  <script>
+    const token = localStorage.getItem("token");
+    const user_id = localStorage.getItem("user_id");
+    const BINANCE_WALLET = "YOUR_BINANCE_WALLET_ADDRESS_HERE"; // replace with your wallet
+
+    if (!token || !user_id) {
+      alert("Please login first");
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_id");
+      window.location.href = "login.html";
+    });
+
+    // Load user info and investments
+    async function loadUser() {
+      try {
+        const res = await fetch(`http://localhost:5000/auth/user/${user_id}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to fetch user info");
+        const user = await res.json();
+        document.getElementById("welcomeMsg").textContent = `Welcome, ${user.full_name}!`;
+        loadInvestments();
+      } catch (err) {
+        console.error(err);
+        document.getElementById("welcomeMsg").textContent = `Welcome, User #${user_id}`;
+      }
+    }
+
+    async function loadInvestments() {
+      try {
+        const res = await fetch(`http://localhost:5000/invest/${user_id}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to fetch investments");
+        const data = await res.json();
+
+        const table = document.getElementById("portfolioTable");
+        table.innerHTML = "";
+
+        let totalInvestments = 0;
+        let balance = 0;
+
+        data.forEach(inv => {
+          const isWithdrawal = inv.amount < 0;
+          const returns = Math.round(Math.random() * 15); // Demo returns
+
+          const row = document.createElement("tr");
+          row.classList.add("border-b");
+          row.innerHTML = `
+            <td class="p-3">${inv.name}</td>
+            <td class="p-3 ${isWithdrawal ? 'text-red-600' : 'text-green-600'}">
+              ${isWithdrawal ? '-' : ''}$${Math.abs(inv.amount)}
+            </td>
+            <td class="p-3 ${isWithdrawal ? 'text-red-600' : 'text-green-600'}">
+              ${isWithdrawal ? 'Withdrawn' : 'Active'}
+            </td>
+            <td class="p-3">${isWithdrawal ? '-' : '+' + returns + '%'}</td>
+          `;
+          table.appendChild(row);
+
+          balance += parseFloat(inv.amount);
+          if (!isWithdrawal) totalInvestments += parseFloat(inv.amount);
+        });
+
+        document.getElementById("accountBalance").textContent = `$${balance.toFixed(2)}`;
+        document.getElementById("totalInvestments").textContent = `$${totalInvestments.toFixed(2)}`;
+        document.getElementById("earnings").textContent = `$${Math.round(totalInvestments * 0.2)}`;
+      } catch (err) {
+        console.error(err);
+        alert("Error loading investments");
+      }
+    }
+
+    // Deposit with copy to clipboard
+    document.getElementById("depositBtn").addEventListener("click", () => {
+      navigator.clipboard.writeText(BINANCE_WALLET)
+        .then(() => alert(`Binance Wallet Address copied: ${BINANCE_WALLET}\nSend your deposit manually.`))
+        .catch(() => alert(`Wallet: ${BINANCE_WALLET}\nCopy manually if clipboard failed.`));
+    });
+
+    // Withdrawal request
+    document.getElementById("withdrawBtn").addEventListener("click", async () => {
+      let amount = prompt("Enter withdrawal amount in USD:");
+      if (!amount) return;
+      amount = parseFloat(amount);
+      if (isNaN(amount) || amount <= 0) return alert("Enter valid amount");
+
+      const balance = parseFloat(document.getElementById("accountBalance").textContent.replace('$',''));
+      if (amount > balance) return alert("Insufficient balance");
+
+      try {
+        const res = await fetch("http://localhost:5000/transactions/withdrawal", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ user_id, amount })
+        });
+        const data = await res.json();
+        if (res.ok) alert(data.message || "Withdrawal request sent!");
+        loadInvestments();
+      } catch (err) {
+        console.error(err);
+        alert("Error sending withdrawal request");
+      }
+    });
+
+    loadUser();
+  </script>
+
+</body>
+</html>
