@@ -1,14 +1,14 @@
 {
   "name": "investapro",
   "version": "1.0.0",
-  "main": "db.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Brian Musyoka",
   "license": "ISC",
-  "description": "",
+  "description": "InvestSmart backend server",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
