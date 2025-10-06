@@ -8,6 +8,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
+<!-- Navbar -->
 <nav class="flex justify-between items-center p-6 bg-green-700 text-white">
   <h1 class="text-2xl font-bold">InvestSmart</h1>
   <div class="space-x-4">
@@ -22,6 +23,7 @@
   </div>
 </nav>
 
+<!-- Main -->
 <main class="flex-1 p-8">
   <h2 id="welcomeMsg" class="text-3xl font-bold text-green-700 mb-6">Welcome Back!</h2>
 
@@ -62,129 +64,102 @@
 </main>
 
 <footer class="bg-gray-100 text-center p-4 text-gray-500">
-  © 2025 InvestSmart. All rights reserved.
+  © <script>document.write(new Date().getFullYear())</script> InvestSmart. All rights reserved.
 </footer>
 
 <script>
-const token = localStorage.getItem("token");
-const user_id = localStorage.getItem("user_id");
+/* ======== USER AUTH SIMULATION ======== */
+const userEmail = localStorage.getItem("userEmail");
 
-if (!token || !user_id) {
-  alert("Please login first");
+if (!userEmail) {
+  alert("Please log in first.");
   window.location.href = "login.html";
 }
 
+document.getElementById("welcomeMsg").textContent = `Welcome, ${userEmail}! 👋`;
+
+/* ======== LOGOUT ======== */
 document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user_id");
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("transactions");
   window.location.href = "login.html";
 });
 
-document.getElementById("welcomeMsg").textContent = `Welcome, User #${user_id}`;
+/* ======== TRANSACTIONS SIMULATION ======== */
+let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 
-// Deposit
-document.getElementById("depositBtn").addEventListener("click", async () => {
+/* ======== DEPOSIT ======== */
+document.getElementById("depositBtn").addEventListener("click", () => {
   let amount = prompt("Enter deposit amount in USD:");
   if (!amount) return;
 
   amount = parseFloat(amount);
-  if (isNaN(amount) || amount <= 0) return alert("Enter valid amount");
+  if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
 
-  try {
-    const res = await fetch("http://localhost:5000/transactions/deposit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ user_id, amount })
-    });
+  transactions.push({
+    type: "Deposit",
+    amount,
+    status: "Completed",
+    returns: Math.round(Math.random() * 20) + "%"
+  });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert(`${data.message}\nSend the funds to this Binance wallet:\n${data.wallet}`);
-    }
-    loadInvestments();
-  } catch (err) {
-    console.error(err);
-    alert("Error connecting to server");
-  }
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+  loadPortfolio();
 });
 
-// Withdraw
-document.getElementById("withdrawBtn").addEventListener("click", async () => {
+/* ======== WITHDRAW ======== */
+document.getElementById("withdrawBtn").addEventListener("click", () => {
   let amount = prompt("Enter withdrawal amount in USD:");
   if (!amount) return;
 
   amount = parseFloat(amount);
-  if (isNaN(amount) || amount <= 0) return alert("Enter valid amount");
+  if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
 
-  try {
-    const res = await fetch("http://localhost:5000/transactions/withdrawal", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ user_id, amount })
-    });
-    const data = await res.json();
-    if (res.ok) alert(data.message);
-    loadInvestments();
-  } catch (err) {
-    console.error(err);
-    alert("Error connecting to server");
-  }
+  transactions.push({
+    type: "Withdrawal",
+    amount,
+    status: "Completed",
+    returns: "-"
+  });
+
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+  loadPortfolio();
 });
 
-// Load investments and transactions
-async function loadInvestments() {
-  try {
-    const res = await fetch(`http://localhost:5000/transactions/${user_id}`, {
-      headers: { "Authorization": `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error("Failed to fetch transactions");
+/* ======== LOAD PORTFOLIO ======== */
+function loadPortfolio() {
+  const table = document.getElementById("portfolioTable");
+  table.innerHTML = "";
 
-    const records = await res.json();
-    let balance = 0, totalInvestments = 0;
-    const table = document.getElementById("portfolioTable");
-    table.innerHTML = "";
+  let balance = 0;
+  let totalInvestments = 0;
 
-    records.forEach(r => {
-      const isWithdrawal = r.type === "withdrawal";
-      const isPending = r.status === "pending";
+  transactions.forEach(tx => {
+    const isWithdrawal = tx.type === "Withdrawal";
+    const row = document.createElement("tr");
+    row.classList.add("border-b");
 
-      const row = document.createElement("tr");
-      row.classList.add("border-b");
-      row.innerHTML = `
-        <td class="p-3">${isWithdrawal ? "Withdrawal" : "Deposit"}</td>
-        <td class="p-3 ${isWithdrawal ? 'text-red-600' : 'text-green-600'}">
-          ${isWithdrawal ? '-' : ''}$${Math.abs(r.amount)}
-        </td>
-        <td class="p-3 ${isPending ? 'text-yellow-600' : isWithdrawal ? 'text-red-600' : 'text-green-600'}">
-          ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}
-        </td>
-        <td class="p-3">${isWithdrawal || isPending ? '-' : Math.round(Math.random()*15)}%</td>
-      `;
-      table.appendChild(row);
+    row.innerHTML = `
+      <td class="p-3">${tx.type}</td>
+      <td class="p-3 ${isWithdrawal ? 'text-red-600' : 'text-green-600'}">
+        ${isWithdrawal ? '-' : ''}$${tx.amount}
+      </td>
+      <td class="p-3 text-green-700">${tx.status}</td>
+      <td class="p-3">${tx.returns}</td>
+    `;
+    table.appendChild(row);
 
-      // Only successful deposits/withdrawals count toward balance
-      if (!isPending) {
-        balance += isWithdrawal ? -r.amount : r.amount;
-        if (!isWithdrawal) totalInvestments += r.amount;
-      }
-    });
+    balance += isWithdrawal ? -tx.amount : tx.amount;
+    if (!isWithdrawal) totalInvestments += tx.amount;
+  });
 
-    document.getElementById("accountBalance").textContent = `$${balance.toFixed(2)}`;
-    document.getElementById("totalInvestments").textContent = `$${totalInvestments.toFixed(2)}`;
-    document.getElementById("earnings").textContent = `$${Math.round(totalInvestments * 0.2)}`;
-  } catch (err) {
-    console.error(err);
-    alert("Error loading investments");
-  }
+  document.getElementById("accountBalance").textContent = `$${balance.toFixed(2)}`;
+  document.getElementById("totalInvestments").textContent = `$${totalInvestments.toFixed(2)}`;
+  document.getElementById("earnings").textContent = `$${(totalInvestments * 0.15).toFixed(2)}`;
 }
 
-loadInvestments();
+// Load when page starts
+loadPortfolio();
 </script>
 
 </body>

@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>InvestSmart - Sign Up</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gradient-to-b from-white to-slate-50 flex items-center justify-center h-screen">
 
   <div class="bg-white shadow-lg rounded-2xl w-full max-w-md p-8">
     <!-- Logo -->
     <div class="flex items-center justify-center gap-3 mb-6">
-      <div class="w-12 h-12 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">IS</div>
+      <div class="w-12 h-12 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">
+        IS
+      </div>
       <h1 class="text-2xl font-bold text-slate-800">InvestSmart</h1>
     </div>
 
@@ -40,17 +43,19 @@
         <input id="signupPassword" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
       </div>
 
-      <div class="mb-4">
+      <div class="mb-6">
         <label class="text-sm font-medium">Confirm Password</label>
         <input id="signupConfirm" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
       </div>
 
-      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium">Sign Up</button>
+      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium hover:bg-emerald-700 transition">
+        Sign Up
+      </button>
     </form>
 
     <p class="text-sm text-center mt-4">
-      Already have an account? 
-      <a href="login.html" class="text-emerald-600 font-medium">Login</a>
+      Already have an account?
+      <a href="login.html" class="text-emerald-600 font-medium hover:underline">Login</a>
     </p>
 
     <div class="text-xs text-slate-400 text-center mt-6">
@@ -60,7 +65,7 @@
 
   <!-- Script -->
   <script>
-    const API_BASE_URL = "https://investsmart-backend.onrender.com"; // ✅ Your live backend
+    const API_BASE_URL = "https://investsmart-backend.onrender.com"; // ✅ your backend URL
 
     const form = document.getElementById("signupForm");
 
@@ -73,7 +78,7 @@
       const password = document.getElementById("signupPassword").value;
       const confirm = document.getElementById("signupConfirm").value;
 
-      // simple validation
+      // ✅ Simple validation
       if (!full_name || !email || !phone || !password) {
         alert("Please fill out all fields.");
         return;
@@ -87,20 +92,20 @@
         const res = await fetch(`${API_BASE_URL}/auth/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ full_name, email, phone, password })
+          body: JSON.stringify({ full_name, email, phone, password }),
         });
 
         const data = await res.json();
 
         if (res.ok) {
-          alert(data.message);
-          window.location.href = "login.html"; // redirect to login page
+          alert("🎉 Account created successfully! Please log in.");
+          window.location.href = "login.html"; // ✅ redirect to login page
         } else {
-          alert(data.error || "Signup failed");
+          alert(data.error || "Signup failed. Please try again.");
         }
       } catch (err) {
         console.error(err);
-        alert("Error connecting to server");
+        alert("⚠️ Unable to connect to the server. Please try again later.");
       }
     });
   </script>

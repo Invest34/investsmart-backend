@@ -30,7 +30,9 @@
         <input id="loginPassword" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
       </div>
 
-      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium">Login</button>
+      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium hover:bg-emerald-700 transition">
+        Login
+      </button>
     </form>
 
     <p class="text-sm text-center mt-4">
@@ -45,37 +47,21 @@
 
   <!-- Script -->
   <script>
-    const API_BASE_URL = "https://investsmart-backend.onrender.com"; // ✅ Live Render backend
-
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
       const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
 
-      try {
-        const res = await fetch(`${API_BASE_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          // Save token & user info to localStorage
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user_id", data.user_id);
-
-          alert("✅ Login successful!");
-          window.location.href = "dashboard.html"; // Redirect after login
-        } else {
-          alert("❌ " + (data.error || "Login failed"));
-        }
-      } catch (error) {
-        console.error(error);
-        alert("⚠️ Something went wrong. Try again later.");
+      if (!email || !password) {
+        alert("⚠️ Please fill in both email and password.");
+        return;
       }
+
+      // Simulate successful login
+      alert("✅ Login successful! Redirecting to dashboard...");
+      localStorage.setItem("userEmail", email);
+      window.location.href = "dashboard.html";
     });
   </script>
 </body>
