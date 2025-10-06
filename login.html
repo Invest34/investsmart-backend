@@ -9,7 +9,6 @@
 <body class="bg-gradient-to-b from-white to-slate-50 flex items-center justify-center h-screen">
 
   <div class="bg-white shadow-lg rounded-2xl w-full max-w-md p-8">
-    <!-- Logo -->
     <div class="flex items-center justify-center gap-3 mb-6">
       <div class="w-12 h-12 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">IS</div>
       <h1 class="text-2xl font-bold text-slate-800">InvestSmart</h1>
@@ -30,9 +29,7 @@
         <input id="loginPassword" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
       </div>
 
-      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium hover:bg-emerald-700 transition">
-        Login
-      </button>
+      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium hover:bg-emerald-700">Login</button>
     </form>
 
     <p class="text-sm text-center mt-4">
@@ -45,22 +42,24 @@
     </div>
   </div>
 
-  <!-- Script -->
   <script>
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
       e.preventDefault();
 
       const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
+      const users = JSON.parse(localStorage.getItem("users")) || [];
 
-      if (!email || !password) {
-        alert("⚠️ Please fill in both email and password.");
+      const user = users.find(u => u.email === email && u.password === password);
+      if (!user) {
+        alert("❌ Invalid credentials. Please try again.");
         return;
       }
 
-      // Simulate successful login
-      alert("✅ Login successful! Redirecting to dashboard...");
-      localStorage.setItem("userEmail", email);
+      // Save login session
+      localStorage.setItem("currentUser", JSON.stringify(user));
+
+      alert("✅ Login successful!");
       window.location.href = "dashboard.html";
     });
   </script>

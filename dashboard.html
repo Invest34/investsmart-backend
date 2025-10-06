@@ -1,166 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dashboard | InvestSmart</title>
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | InvestSmart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
-<!-- Navbar -->
-<nav class="flex justify-between items-center p-6 bg-green-700 text-white">
-  <h1 class="text-2xl font-bold">InvestSmart</h1>
-  <div class="space-x-4">
-    <a href="investment-homepage.html" class="hover:underline">Home</a>
-    <a href="plans.html" class="hover:underline">Plans</a>
-    <a href="learn.html" class="hover:underline">Learn</a>
-    <a href="about.html" class="hover:underline">About</a>
-    <a href="contact.html" class="hover:underline">Contact</a>
-    <button id="logoutBtn" class="bg-yellow-400 text-green-900 px-4 py-2 rounded-lg font-medium hover:bg-yellow-500">
-      Logout
-    </button>
-  </div>
-</nav>
-
-<!-- Main -->
-<main class="flex-1 p-8">
-  <h2 id="welcomeMsg" class="text-3xl font-bold text-green-700 mb-6">Welcome Back!</h2>
-
-  <section class="grid md:grid-cols-3 gap-6 mb-10">
-    <div class="bg-white shadow rounded-xl p-6">
-      <h3 class="text-gray-500 mb-2">Account Balance</h3>
-      <p id="accountBalance" class="text-2xl font-bold text-green-700">$0</p>
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center p-6 bg-green-700 text-white">
+    <h1 class="text-2xl font-bold">InvestSmart</h1>
+    <div class="space-x-4">
+      <a href="investment-homepage.html" class="hover:underline">Home</a>
+      <a href="plans.html" class="hover:underline">Plans</a>
+      <a href="learn.html" class="hover:underline">Learn</a>
+      <a href="about.html" class="hover:underline">About</a>
+      <a href="contact.html" class="hover:underline">Contact</a>
+      <button id="logoutBtn" class="bg-yellow-400 text-green-900 px-4 py-2 rounded-lg font-medium hover:bg-yellow-500">
+        Logout
+      </button>
     </div>
-    <div class="bg-white shadow rounded-xl p-6">
-      <h3 class="text-gray-500 mb-2">Total Investments</h3>
-      <p id="totalInvestments" class="text-2xl font-bold text-green-700">$0</p>
-    </div>
-    <div class="bg-white shadow rounded-xl p-6">
-      <h3 class="text-gray-500 mb-2">Earnings</h3>
-      <p id="earnings" class="text-2xl font-bold text-green-700">$0</p>
-    </div>
-  </section>
+  </nav>
 
-  <section class="bg-white shadow rounded-xl p-6 mb-10">
-    <h3 class="text-xl font-semibold mb-4">Your Portfolio</h3>
-    <table class="w-full text-left border-collapse">
-      <thead>
-        <tr class="bg-gray-100 text-gray-600">
-          <th class="p-3">Investment</th>
-          <th class="p-3">Amount</th>
-          <th class="p-3">Status</th>
-          <th class="p-3">Returns</th>
-        </tr>
-      </thead>
-      <tbody id="portfolioTable"></tbody>
-    </table>
-  </section>
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <h2 id="welcomeMsg" class="text-3xl font-bold text-green-700 mb-6">Welcome Back!</h2>
 
-  <section class="flex gap-4">
-    <button id="depositBtn" class="flex-1 bg-green-700 text-white py-3 rounded-lg shadow hover:bg-green-800">Deposit</button>
-    <button id="withdrawBtn" class="flex-1 bg-yellow-400 text-green-900 py-3 rounded-lg shadow hover:bg-yellow-500">Withdraw</button>
-  </section>
-</main>
+    <!-- Stats Cards -->
+    <section class="grid md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-gray-500 mb-2">Account Balance</h3>
+        <p id="accountBalance" class="text-2xl font-bold text-green-700">$0</p>
+      </div>
+      <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-gray-500 mb-2">Total Investments</h3>
+        <p id="totalInvestments" class="text-2xl font-bold text-green-700">$0</p>
+      </div>
+      <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-gray-500 mb-2">Earnings</h3>
+        <p id="earnings" class="text-2xl font-bold text-green-700">$0</p>
+      </div>
+    </section>
 
-<footer class="bg-gray-100 text-center p-4 text-gray-500">
-  © <script>document.write(new Date().getFullYear())</script> InvestSmart. All rights reserved.
-</footer>
+    <!-- Portfolio Table -->
+    <section class="bg-white shadow rounded-xl p-6 mb-10">
+      <h3 class="text-xl font-semibold mb-4">Your Portfolio</h3>
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-100 text-gray-600">
+            <th class="p-3">Investment</th>
+            <th class="p-3">Amount</th>
+            <th class="p-3">Status</th>
+            <th class="p-3">Returns</th>
+          </tr>
+        </thead>
+        <tbody id="portfolioTable"></tbody>
+      </table>
+    </section>
 
-<script>
-/* ======== USER AUTH SIMULATION ======== */
-const userEmail = localStorage.getItem("userEmail");
+    <!-- Action Buttons -->
+    <section class="flex gap-4">
+      <button id="depositBtn" class="flex-1 bg-green-700 text-white py-3 rounded-lg shadow hover:bg-green-800">Deposit</button>
+      <button id="withdrawBtn" class="flex-1 bg-yellow-400 text-green-900 py-3 rounded-lg shadow hover:bg-yellow-500">Withdraw</button>
+    </section>
+  </main>
 
-if (!userEmail) {
-  alert("Please log in first.");
-  window.location.href = "login.html";
-}
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center p-4 text-gray-500">
+    © <script>document.write(new Date().getFullYear())</script> InvestSmart. All rights reserved.
+  </footer>
 
-document.getElementById("welcomeMsg").textContent = `Welcome, ${userEmail}! 👋`;
+  <script>
+    /* ======== USER AUTH ======== */
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-/* ======== LOGOUT ======== */
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("userEmail");
-  localStorage.removeItem("transactions");
-  window.location.href = "login.html";
-});
+    if (!currentUser) {
+      alert("Please log in first.");
+      window.location.href = "login.html";
+    }
 
-/* ======== TRANSACTIONS SIMULATION ======== */
-let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${currentUser.fullName}! 👋`;
 
-/* ======== DEPOSIT ======== */
-document.getElementById("depositBtn").addEventListener("click", () => {
-  let amount = prompt("Enter deposit amount in USD:");
-  if (!amount) return;
+    /* ======== LOGOUT ======== */
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+    });
 
-  amount = parseFloat(amount);
-  if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
+    /* ======== TRANSACTIONS ======== */
+    const userKey = `transactions_${currentUser.email}`;
+    let transactions = JSON.parse(localStorage.getItem(userKey)) || [];
 
-  transactions.push({
-    type: "Deposit",
-    amount,
-    status: "Completed",
-    returns: Math.round(Math.random() * 20) + "%"
-  });
+    /* ======== DEPOSIT ======== */
+    document.getElementById("depositBtn").addEventListener("click", () => {
+      let amount = prompt("Enter deposit amount in USD:");
+      if (!amount) return;
 
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-  loadPortfolio();
-});
+      amount = parseFloat(amount);
+      if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
 
-/* ======== WITHDRAW ======== */
-document.getElementById("withdrawBtn").addEventListener("click", () => {
-  let amount = prompt("Enter withdrawal amount in USD:");
-  if (!amount) return;
+      transactions.push({
+        type: "Deposit",
+        amount,
+        status: "Completed",
+        returns: Math.round(Math.random() * 20) + "%"
+      });
 
-  amount = parseFloat(amount);
-  if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
+      localStorage.setItem(userKey, JSON.stringify(transactions));
+      loadPortfolio();
+    });
 
-  transactions.push({
-    type: "Withdrawal",
-    amount,
-    status: "Completed",
-    returns: "-"
-  });
+    /* ======== WITHDRAW ======== */
+    document.getElementById("withdrawBtn").addEventListener("click", () => {
+      let amount = prompt("Enter withdrawal amount in USD:");
+      if (!amount) return;
 
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-  loadPortfolio();
-});
+      amount = parseFloat(amount);
+      if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
 
-/* ======== LOAD PORTFOLIO ======== */
-function loadPortfolio() {
-  const table = document.getElementById("portfolioTable");
-  table.innerHTML = "";
+      transactions.push({
+        type: "Withdrawal",
+        amount,
+        status: "Completed",
+        returns: "-"
+      });
 
-  let balance = 0;
-  let totalInvestments = 0;
+      localStorage.setItem(userKey, JSON.stringify(transactions));
+      loadPortfolio();
+    });
 
-  transactions.forEach(tx => {
-    const isWithdrawal = tx.type === "Withdrawal";
-    const row = document.createElement("tr");
-    row.classList.add("border-b");
+    /* ======== LOAD PORTFOLIO ======== */
+    function loadPortfolio() {
+      const table = document.getElementById("portfolioTable");
+      table.innerHTML = "";
 
-    row.innerHTML = `
-      <td class="p-3">${tx.type}</td>
-      <td class="p-3 ${isWithdrawal ? 'text-red-600' : 'text-green-600'}">
-        ${isWithdrawal ? '-' : ''}$${tx.amount}
-      </td>
-      <td class="p-3 text-green-700">${tx.status}</td>
-      <td class="p-3">${tx.returns}</td>
-    `;
-    table.appendChild(row);
+      let balance = 0;
+      let totalInvestments = 0;
 
-    balance += isWithdrawal ? -tx.amount : tx.amount;
-    if (!isWithdrawal) totalInvestments += tx.amount;
-  });
+      transactions.forEach(tx => {
+        const isWithdrawal = tx.type === "Withdrawal";
+        const row = document.createElement("tr");
+        row.classList.add("border-b");
 
-  document.getElementById("accountBalance").textContent = `$${balance.toFixed(2)}`;
-  document.getElementById("totalInvestments").textContent = `$${totalInvestments.toFixed(2)}`;
-  document.getElementById("earnings").textContent = `$${(totalInvestments * 0.15).toFixed(2)}`;
-}
+        row.innerHTML = `
+          <td class="p-3">${tx.type}</td>
+          <td class="p-3 ${isWithdrawal ? 'text-red-600' : 'text-green-600'}">
+            ${isWithdrawal ? '-' : ''}$${tx.amount}
+          </td>
+          <td class="p-3 text-green-700">${tx.status}</td>
+          <td class="p-3">${tx.returns}</td>
+        `;
+        table.appendChild(row);
 
-// Load when page starts
-loadPortfolio();
-</script>
+        balance += isWithdrawal ? -tx.amount : tx.amount;
+        if (!isWithdrawal) totalInvestments += tx.amount;
+      });
+
+      document.getElementById("accountBalance").textContent = `$${balance.toFixed(2)}`;
+      document.getElementById("totalInvestments").textContent = `$${totalInvestments.toFixed(2)}`;
+      document.getElementById("earnings").textContent = `$${(totalInvestments * 0.15).toFixed(2)}`;
+    }
+
+    // Load when page starts
+    loadPortfolio();
+  </script>
 
 </body>
 </html>

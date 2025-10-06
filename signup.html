@@ -2,60 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>InvestSmart - Sign Up</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="bg-gradient-to-b from-white to-slate-50 flex items-center justify-center h-screen">
 
   <div class="bg-white shadow-lg rounded-2xl w-full max-w-md p-8">
-    <!-- Logo -->
     <div class="flex items-center justify-center gap-3 mb-6">
-      <div class="w-12 h-12 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">
-        IS
-      </div>
+      <div class="w-12 h-12 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">IS</div>
       <h1 class="text-2xl font-bold text-slate-800">InvestSmart</h1>
     </div>
 
-    <h2 class="text-xl font-semibold text-center mb-2">Create Your Account</h2>
-    <p class="text-center text-slate-500 mb-6 text-sm">Join us and start investing smarter 🌱</p>
+    <h2 class="text-xl font-semibold text-center mb-2">Create Account</h2>
+    <p class="text-center text-slate-500 mb-6 text-sm">Join InvestSmart and grow your investments 💸</p>
 
-    <!-- Signup Form -->
+    <!-- Sign Up Form -->
     <form id="signupForm">
       <div class="mb-4">
         <label class="text-sm font-medium">Full Name</label>
-        <input id="signupName" type="text" class="w-full mt-1 p-3 border rounded-md" placeholder="John Doe" required />
+        <input id="fullName" type="text" class="w-full mt-1 p-3 border rounded-md" placeholder="John Doe" required />
       </div>
 
       <div class="mb-4">
         <label class="text-sm font-medium">Email</label>
-        <input id="signupEmail" type="email" class="w-full mt-1 p-3 border rounded-md" placeholder="you@example.com" required />
+        <input id="email" type="email" class="w-full mt-1 p-3 border rounded-md" placeholder="you@example.com" required />
       </div>
 
       <div class="mb-4">
-        <label class="text-sm font-medium">Phone</label>
-        <input id="signupPhone" type="text" class="w-full mt-1 p-3 border rounded-md" placeholder="+254700000000" required />
+        <label class="text-sm font-medium">Phone Number</label>
+        <input id="phone" type="tel" class="w-full mt-1 p-3 border rounded-md" placeholder="+254712345678" required />
       </div>
 
       <div class="mb-4">
         <label class="text-sm font-medium">Password</label>
-        <input id="signupPassword" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
+        <input id="password" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
       </div>
 
-      <div class="mb-6">
-        <label class="text-sm font-medium">Confirm Password</label>
-        <input id="signupConfirm" type="password" class="w-full mt-1 p-3 border rounded-md" placeholder="********" required />
-      </div>
-
-      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium hover:bg-emerald-700 transition">
-        Sign Up
-      </button>
+      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-md font-medium hover:bg-emerald-700">Sign Up</button>
     </form>
 
     <p class="text-sm text-center mt-4">
-      Already have an account?
-      <a href="login.html" class="text-emerald-600 font-medium hover:underline">Login</a>
+      Already have an account? 
+      <a href="login.html" class="text-emerald-600 font-medium">Login</a>
     </p>
 
     <div class="text-xs text-slate-400 text-center mt-6">
@@ -63,52 +52,35 @@
     </div>
   </div>
 
-  <!-- Script -->
   <script>
-    const API_BASE_URL = "https://investsmart-backend.onrender.com"; // ✅ your backend URL
-
-    const form = document.getElementById("signupForm");
-
-    form.addEventListener("submit", async (e) => {
+    document.getElementById("signupForm").addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const full_name = document.getElementById("signupName").value.trim();
-      const email = document.getElementById("signupEmail").value.trim();
-      const phone = document.getElementById("signupPhone").value.trim();
-      const password = document.getElementById("signupPassword").value;
-      const confirm = document.getElementById("signupConfirm").value;
+      const fullName = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-      // ✅ Simple validation
-      if (!full_name || !email || !phone || !password) {
-        alert("Please fill out all fields.");
-        return;
-      }
-      if (password !== confirm) {
-        alert("Passwords do not match.");
+      if (!fullName || !email || !phone || !password) {
+        alert("Please fill in all fields.");
         return;
       }
 
-      try {
-        const res = await fetch(`${API_BASE_URL}/auth/signup`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ full_name, email, phone, password }),
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          alert("🎉 Account created successfully! Please log in.");
-          window.location.href = "login.html"; // ✅ redirect to login page
-        } else {
-          alert(data.error || "Signup failed. Please try again.");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("⚠️ Unable to connect to the server. Please try again later.");
+      // Save user locally
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const existingUser = users.find((u) => u.email === email);
+      if (existingUser) {
+        alert("User already exists. Please login.");
+        window.location.href = "login.html";
+        return;
       }
+
+      users.push({ id: Date.now(), fullName, email, phone, password });
+      localStorage.setItem("users", JSON.stringify(users));
+
+      alert("✅ Sign up successful! Please log in.");
+      window.location.href = "login.html";
     });
   </script>
-
 </body>
 </html>
